@@ -23,9 +23,22 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
+@app.before_request
+def before_request():
+    g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
+
 @app.route('/')
-def bitly():
-    return 'starting my bit.ly clone'
+def index(): pass
+
+@app.route('/new_url')
+def new_url():
+    return redirect(url_for('new_url'))
 
 if __name__ == '__main__':
 #make externally visable-- Turn off degugger!
