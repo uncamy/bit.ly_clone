@@ -5,13 +5,13 @@ from flask import Flask, request, session, g, redirect, url_for,\
 from contextlib import closing
 
 #configuration
-DATABASE = '/tmp/bitly.db'
+DATABASE = 'bitly.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 app = Flask(__name__)
-
+app.config.from_object(__name__)
 
 
 def connect_db():
@@ -33,17 +33,25 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@app.route('/')
-def index(): pass
+@app.route('/', methods= ['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        request.form['url']
 
-@app.route('/new_url')
-def new_url():
+    return render_template('index.html')
+
+# create function to shorten url--> 1. take url return url
+#2. take url and return new url
+# use for loops in the template and {{variables in template}}
+@app.route('/<new_url>')
+def new_url(new_url):
     return redirect(url_for('new_url'))
 
 if __name__ == '__main__':
 #make externally visable-- Turn off degugger!
     #app.run(host='0.0.0.0')
 #development mode
+    init_db()
     app.run()
 
 @app.route('/getaddress', methods = ['POST', 'GET'])
