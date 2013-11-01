@@ -1,4 +1,15 @@
-from flask import Flask, request
+#all imports
+import sqlite3
+from flask import Flask, request, session, g, redirect, url_for,\
+                  abort, render_template, flash
+
+#configuration
+DATABASE = '/tmp/bitly.db'
+DEBUG = TRUE
+SECRET_KEY = 'development key'
+USERNAME = 'admin'
+PASSWORD = 'default'
+
 
 app = Flask(__name__)
 
