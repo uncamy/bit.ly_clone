@@ -18,5 +18,10 @@ class BitlyTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert 'No urls entered' in rv.data
 
+    def test_url_entry(self):
+        rv = self.app.post('/add', data=dict(
+            title='<www.google.com'), follow_redirects=True)
+        assert 'No urls entered' not in rv.data
+        assert 'www.google.com' in rv.data
 if __name__ == '__main__':
     unittest.main()
