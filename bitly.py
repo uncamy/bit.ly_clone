@@ -5,7 +5,7 @@ from flask import Flask, request, session, g, redirect, url_for,\
 from contextlib import closing
 
 #configuration
-DATABASE = 'bitly.db'
+DATABASE = 'data_bitly.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -23,6 +23,9 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
+def shorten_url(old_url):
+    return old_url
+
 @app.before_request
 def before_request():
     g.db = connect_db()
@@ -36,11 +39,14 @@ def teardown_request(exception):
 @app.route('/', methods= ['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        request.form['url']
-
-    return render_template('index.html')
+        old_url= request.form['url']
+        new_url= shorten_url(old_url)
+        return render_template('index.html', shorten_url= new_url)
+    else:
+        return render_template('index.html')
 
 # create function to shorten url--> 1. take url return url
+
 #2. take url and return new url
 # use for loops in the template and {{variables in template}}
 @app.route('/<new_url>')
