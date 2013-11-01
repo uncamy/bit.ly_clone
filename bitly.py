@@ -2,16 +2,26 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for,\
                   abort, render_template, flash
+from contextlib import closing
 
 #configuration
 DATABASE = '/tmp/bitly.db'
-DEBUG = TRUE
+DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-
-
 app = Flask(__name__)
+
+
+
+def connect_db():
+    return sqlite3.connect(app.config['DATABASE'])
+
+def init_db():
+    with closing(connect_db()) as db:
+        with app.open_resource('modles.sql', mode = 'r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
 
 @app.route('/')
 def bitly():
@@ -21,7 +31,7 @@ if __name__ == '__main__':
 #make externally visable-- Turn off degugger!
     #app.run(host='0.0.0.0')
 #development mode
-    app.run(debug= True)
+    app.run()
 
 @app.route('/getaddress', methods = ['POST', 'GET'])
 def getaddress():
