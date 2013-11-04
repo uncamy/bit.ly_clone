@@ -46,13 +46,13 @@ def index():
     if request.method == 'POST':
         old_url= request.form['url']
         new_url= shorten_url(old_url)
-        return redirect(url_for('/new_url', new_url))
+        return render_template('index.html', shorten_url = new_url)
     else:
         return render_template('index.html')
 
-@app.route('/new_url')
+@app.route('/<new_url>')
 def new_url(new_url):
-    return render_template('index.html', shorten_url= new_url)
+    return redirect(url_for('/'))
 
 if __name__ == '__main__':
 #make externally visable-- Turn off degugger!
