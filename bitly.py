@@ -1,5 +1,7 @@
 #all imports
 import sqlite3
+import string
+import random
 from flask import Flask, request, session, g, redirect, url_for,\
                   abort, render_template, flash
 from contextlib import closing
@@ -24,7 +26,10 @@ def init_db():
         db.commit()
 
 def shorten_url(old_url):
-    return old_url
+    gen_url = [random.choice(string.ascii_letters + string.digits)\
+    for x in xrange(4)]
+    new_url = "".join(gen_url)
+    return new_url
 
 @app.before_request
 def before_request():
@@ -41,17 +46,13 @@ def index():
     if request.method == 'POST':
         old_url= request.form['url']
         new_url= shorten_url(old_url)
-        return render_template('index.html', shorten_url= new_url)
+        return redirect(url_for('/new_url', new_url))
     else:
         return render_template('index.html')
 
-# create function to shorten url--> 1. take url return url
-
-#2. take url and return new url
-# use for loops in the template and {{variables in template}}
-@app.route('/<new_url>')
+@app.route('/new_url')
 def new_url(new_url):
-    return redirect(url_for('new_url'))
+    return render_template('index.html', shorten_url= new_url)
 
 if __name__ == '__main__':
 #make externally visable-- Turn off degugger!
